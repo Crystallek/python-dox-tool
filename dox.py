@@ -49,8 +49,6 @@ def add(text):
     entry.pack(padx=10, pady=0)
 
     addedEntries.append([entry, entry_label])
-    entriesLabels.append(text)
-    print(addedEntries, entriesLabels)
 
 def remove(text):
     global top
