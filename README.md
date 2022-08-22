@@ -3,8 +3,8 @@ sfdsfd
 
 todo:
 
-- geolocate fajfka btn
-- scrollbar
+- geolocate fajfka btn done
+- scrollbar done 
 - auto upload přes selenium protože captcha xd
-- lepsy ui
-- vytvareny kapitol XD
+- lepsy ui done
+- vytvareny kapitol XD done
