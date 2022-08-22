@@ -1,12 +1,8 @@
-from json.tool import main
 import tkinter
 import ttkthemes
 import webbrowser
 from tkinter import *
 from tkinter import ttk
-import time
-import json
-import requests
 
 scrollbarfix = True
 entriesLabels = []
@@ -40,14 +36,14 @@ def popup(text, do):
         btn = ttk.Button(top, text="Add", command=lambda: add("Chapter: " + name.get(), None))
     if do == "remove":
         top.title("Remove")
-        btn = ttk.Button(top, text="Remove", command=lambda: remove(name.get(), None))
+        btn = ttk.Button(top, text="Remove", command=lambda: remove(name.get()))
 
     label.pack(padx=10, pady=2)
     name.pack(padx=10, pady=2)
     btn.pack(padx=10, pady=2)
 
     if do == "add":
-        btn2 = ttk.Checkbutton(top, text="sukam babky", variable=checkButtonState)
+        btn2 = ttk.Checkbutton(top, text="Geolocate (IPs only)", variable=checkButtonState, takefocus=0)
         btn2.pack()
         top.geometry("200x120")
     else:
@@ -58,29 +54,31 @@ def add(text, locator):
     global top
     global scrollbarfix
 
-    if locator == 1:
-        url = 'http://ipinfo.io/json'
-        response = requests.get(url)
-        data = json.loads(response.text)
-        print(data)
+    #if locator == 1:
+    #    url = 'https://geolocation-db.com/jsonp/8.8.8.8'
+    #    response = requests.get(url)
+    #    data = json.loads(response.text)
+    #    print(data)
 
     top.destroy()
     
     if text in entriesLabels or text == "":
         return
 
+    entry_label = ttk.Label(second_frame, text=text)
+    entry_label.pack(padx=10, pady=10)
+    
     if "Chapter:" in text:
-        entry_label = ttk.Label(second_frame, text=text)
-        entry_label.pack(padx=10, pady=10)
         addedEntries.append([None, entry_label])
     else:
-        entry_label = ttk.Label(second_frame, text=text)
-        entry_label.pack(padx=10, pady=10)
         entry = ttk.Entry(second_frame, width=100)
         entry.pack(padx=10, pady=0)
         addedEntries.append([entry, entry_label])
-    
-    entriesLabels.append(text)
+
+    if locator == 1:
+        entriesLabels.append(text + " (IP)")
+    else:
+        entriesLabels.append(text)
     print(addedEntries, entriesLabels)
 
     if scrollbarfix: app.geometry("650x501") #scrollbar lazy fix
@@ -96,7 +94,7 @@ def remove(text):
     index = findindex(len(entriesLabels) - 1, entriesLabels, text)
 
     for shit in addedEntries[index]:
-        try :
+        try:
             shit.pack_forget()
         except:
             pass
