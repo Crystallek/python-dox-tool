@@ -8,3 +8,4 @@ todo:
 - auto upload přes selenium protože captcha xd
 - lepsy ui done
 - vytvareny kapitol XD done
+- save to file
