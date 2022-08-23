@@ -115,7 +115,7 @@ def save():
                     f.close()
             except:
                 with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-                    f.write(f"{pyfiglet.figlet_format(str(entries[1].cget('text')).removeprefix('Chapter: '), font='big')}")
+                    f.write(f"\n{pyfiglet.figlet_format(str(entries[1].cget('text')).removeprefix('Chapter: '), font='big')}")
 
             if f"{entries[1].cget('text')} (IP)" in entriesLabels:
                 try: 
@@ -129,7 +129,7 @@ def save():
                         f.write(f"Country: {r['country']} ({country.official_name})\n")
                         f.write(f"Latitude: {r['latitude']}\n")
                         f.write(f"Longitude: {r['longitude']}\n\n")
-                        f.write(f"Map view: https://www.google.com/maps/@{r['latitude']},{r['longitude']},17z")
+                        f.write(f"Map view: https://www.google.com/maps/@{r['latitude']},{r['longitude']},17z\n")
                         f.close()
                 except:
                     pass
@@ -155,7 +155,7 @@ filemenu.add_command(label="Exit (ALT + F4)", command=lambda: exit())
 menubar.add_cascade(label="Main", menu=filemenu)
 
 helpmenu = Menu(menubar, tearoff=0)
-helpmenu.add_command(label="GitHub", command=lambda: webbrowser.open_new("https://github.com/Crystallek/dox-app"))
+helpmenu.add_command(label="GitHub", command=lambda: webbrowser.open_new("https://github.com/Crystallek/python-dox-tool"))
 menubar.add_cascade(label="Help", menu=helpmenu)
 
 app.config(menu=menubar)
