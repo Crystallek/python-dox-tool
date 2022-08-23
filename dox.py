@@ -1,15 +1,27 @@
-import tkinter
+from ip2geotools.databases.noncommercial import DbIpCity
 import ttkthemes
 import webbrowser
-from tkinter import *
+import tkinter
+import pyfiglet
+import time
+import ipaddress
+import os
 from tkinter import ttk
+from tkinter import *
+#from tkinter import ttk
+#https://www.freecodecamp.org/news/how-to-get-location-information-of-ip-address-using-python/
+#https://ipapi.co/8.8.8.8/json/
+#https://datasciencesphere.com/project/track-location-ip-address-python-geocoder/f
+#https://pypi.org/project/pycountry/
+
+os.chdir(os.path.dirname(__file__))
 
 scrollbarfix = True
 entriesLabels = []
 addedEntries = []
 writeToFile = []
-#scrollbar moment
 
+#save and copy, keyboard sftuff
 
 def findindex(index, array, sub):
     counter = 0
@@ -54,12 +66,6 @@ def add(text, locator):
     global top
     global scrollbarfix
 
-    #if locator == 1:
-    #    url = 'https://geolocation-db.com/jsonp/8.8.8.8'
-    #    response = requests.get(url)
-    #    data = json.loads(response.text)
-    #    print(data)
-
     top.destroy()
     
     if text in entriesLabels or text == "":
@@ -102,11 +108,42 @@ def remove(text):
     entriesLabels.pop(index)
 
 def save():
+    global entry1_text, entry1, entriesLabels
+    _time = round(time.time())
+
+    print(pyfiglet.figlet_format(entry1.get(), font='big'))
+    with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
+        f.write(pyfiglet.figlet_format(entry1.get(), font='big'))
+        f.close()
+
     for entries in addedEntries:
         try:
-            print(entries[1].cget("text"), entries[0].get())
+            print(F"{entries[1].cget('text').capitalize()}: {entries[0].get()}")
+            try:
+                with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
+                    f.write(F"{entries[1].cget('text').capitalize()}: {entries[0].get()}\n")
+                    f.close()
+            except Exception as e:
+                print(e)
+
+            if f"{entries[1].cget('text')} (IP)" in entriesLabels: #https://ipapi.co/lol/json/
+                try: 
+                    ipaddress.ip_address(entries[0].get())
+                    response = DbIpCity.get(entries[0].get(), api_key='free')
+                    print(response.to_csv('---').split("---"))
+                    r = response.to_csv('---').split("---")   
+
+                    with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
+                        f.write("\n")
+                        for stuff in r:
+                            f.write(f"{stuff}\n")
+                        f.close()
+                except:
+                    pass
         except:
-            print(entries[1].cget("text"))
+            print(pyfiglet.figlet_format(str(entries[1].cget("text")).removeprefix("Chapter: "), font='big'))
+            with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
+                f.write(pyfiglet.figlet_format(str(entries[1].cget("text")).removeprefix("Chapter: "), font='big'))
 
 app = ttkthemes.ThemedTk(theme="arc")
 app.geometry("650x500")
@@ -118,21 +155,21 @@ filemenu.add_command(label="Add", command=lambda: popup("Add", "add"))
 filemenu.add_command(label="Add Chapter", command=lambda: popup("Add Chapter", "addc"))
 filemenu.add_command(label="Remove", command=lambda: popup("Remove", "remove"))
 filemenu.add_command(label="Save", command=lambda: save())
+filemenu.add_command(label="Save and copy", command=lambda: save())
 filemenu.add_separator()
-filemenu.add_command(label="Exit", command=lambda: exit())
+filemenu.add_command(label="Exit (ALT + F4)", command=lambda: exit())
 menubar.add_cascade(label="Main", menu=filemenu)
 
 helpmenu = Menu(menubar, tearoff=0)
 helpmenu.add_command(label="GitHub", command=lambda: webbrowser.open_new("https://github.com/Crystallek/dox-app"))
-#helpmenu.add_command(label="About...", command=donothing)
 menubar.add_cascade(label="Help", menu=helpmenu)
 
 app.config(menu=menubar)
 
-main_frame = Frame(app)
+main_frame = Frame(app, takefocus=0)
 main_frame.pack(fill=BOTH, expand=1)
 
-main_canvas = Canvas(main_frame)
+main_canvas = Canvas(main_frame, takefocus=0)
 main_canvas.pack(side=LEFT, fill=BOTH, expand=1)
 
 main_scrollbar = ttk.Scrollbar(main_frame, orient=VERTICAL, command=main_canvas.yview)
@@ -141,7 +178,7 @@ main_scrollbar.pack(side=RIGHT, fill=Y)
 main_canvas.configure(yscrollcommand=main_scrollbar.set)
 main_canvas.bind("<Configure>", lambda e: main_canvas.configure(scrollregion=main_canvas.bbox("all")))
 
-second_frame = Frame(main_canvas)
+second_frame = Frame(main_canvas, takefocus=0)
 main_canvas.create_window((0,0), window=second_frame, anchor="nw")
 
 entry1_text = ttk.Label(second_frame, text="DOX NAME")
