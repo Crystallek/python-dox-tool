@@ -1,11 +1,4 @@
 # dox-app
-sfdsfd
+pog
 
-todo:
-
-- geolocate fajfka btn done
-- scrollbar done 
-- auto upload přes selenium protože captcha xd
-- lepsy ui done
-- vytvareny kapitol XD done
-- save to file
+u can easily create pog looking doxxes with this
