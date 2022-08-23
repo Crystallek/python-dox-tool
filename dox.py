@@ -111,10 +111,11 @@ def save():
         try:
             try:
                 with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-                    f.write(F"{entries[1].cget('text').capitalize()}: {entries[0].get()}\n\n\n")
+                    f.write(F"{entries[1].cget('text').capitalize()}: {entries[0].get()}\n")
                     f.close()
             except:
-                pass
+                with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
+                    f.write(f"{pyfiglet.figlet_format(str(entries[1].cget('text')).removeprefix('Chapter: '), font='big')}")
 
             if f"{entries[1].cget('text')} (IP)" in entriesLabels:
                 try: 
@@ -133,8 +134,7 @@ def save():
                 except:
                     pass
         except:
-            with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-                f.write(f"{pyfiglet.figlet_format(str(entries[1].cget('text')).removeprefix('Chapter: '), font='big')}\n")
+            pass
     
     with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
         f.write(F"Created with superior DOX TOOL by Crystallek#3348 (https://github.com/Crystallek/dox-app)")
