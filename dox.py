@@ -10,15 +10,6 @@ import json
 import pycountry
 from tkinter import ttk
 from tkinter import *
-#from tkinter import ttk
-#https://www.freecodecamp.org/news/how-to-get-location-information-of-ip-address-using-python/
-#https://ipapi.co/8.8.8.8/json/
-#https://datasciencesphere.com/project/track-location-ip-address-python-geocoder/f
-#https://pypi.org/project/pycountry/
-
-
-
-#auto detect ips
 
 os.chdir(os.path.dirname(__file__))
 
@@ -26,8 +17,6 @@ scrollbarfix = True
 entriesLabels = []
 addedEntries = []
 writeToFile = []
-
-#save and copy, keyboard sftuff
 
 def findindex(index, array, sub):
     counter = 0
@@ -122,33 +111,38 @@ def save():
         try:
             try:
                 with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-                    f.write(F"{entries[1].cget('text').capitalize()}: {entries[0].get()}\n")
+                    f.write(F"{entries[1].cget('text').capitalize()}: {entries[0].get()}\n\n\n")
                     f.close()
             except:
                 pass
 
-            if f"{entries[1].cget('text')} (IP)" in entriesLabels: #https://ipapi.co/lol/json/
+            if f"{entries[1].cget('text')} (IP)" in entriesLabels:
                 try: 
                     ipaddress.ip_address(entries[0].get())
                     response = DbIpCity.get(entries[0].get(), api_key='free')
                     r = json.loads(response.to_json())
                     country = pycountry.countries.get(alpha_2=str(r['country']).upper())
                     with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-                        f.write(f"\nCity: {r['city']}\n") # '
+                        f.write(f"\nCity: {r['city']}\n")
                         f.write(f"Region: {r['region']}\n")
                         f.write(f"Country: {r['country']} ({country.official_name})\n")
                         f.write(f"Latitude: {r['latitude']}\n")
                         f.write(f"Longitude: {r['longitude']}\n\n")
+                        f.write(f"Map view: https://www.google.com/maps/@{r['latitude']},{r['longitude']},17z")
                         f.close()
                 except:
                     pass
         except:
             with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
                 f.write(f"{pyfiglet.figlet_format(str(entries[1].cget('text')).removeprefix('Chapter: '), font='big')}\n")
+    
+    with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
+        f.write(F"Created with superior DOX TOOL by Crystallek#3348 (https://github.com/Crystallek/dox-app)")
+        f.close()
 
 app = ttkthemes.ThemedTk(theme="arc")
 app.geometry("650x500")
-app.resizable(False, False) #soon resizable
+app.resizable(False, False)
 
 menubar = Menu(app)
 filemenu = Menu(menubar, tearoff=0)
