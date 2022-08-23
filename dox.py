@@ -6,6 +6,8 @@ import pyfiglet
 import time
 import ipaddress
 import os
+import json
+import pycountry
 from tkinter import ttk
 from tkinter import *
 #from tkinter import ttk
@@ -13,6 +15,10 @@ from tkinter import *
 #https://ipapi.co/8.8.8.8/json/
 #https://datasciencesphere.com/project/track-location-ip-address-python-geocoder/f
 #https://pypi.org/project/pycountry/
+
+
+
+#auto detect ips
 
 os.chdir(os.path.dirname(__file__))
 
@@ -44,7 +50,6 @@ def popup(text, do):
         top.title("Add")
         btn = ttk.Button(top, text="Add", command=lambda: add(name.get(), checkButtonState.get()))
     if do == "addc":
-        print("uh")
         btn = ttk.Button(top, text="Add", command=lambda: add("Chapter: " + name.get(), None))
     if do == "remove":
         top.title("Remove")
@@ -62,7 +67,6 @@ def popup(text, do):
         top.geometry("200x90")
 
 def add(text, locator):
-    print(locator)
     global top
     global scrollbarfix
 
@@ -85,7 +89,6 @@ def add(text, locator):
         entriesLabels.append(text + " (IP)")
     else:
         entriesLabels.append(text)
-    print(addedEntries, entriesLabels)
 
     if scrollbarfix: app.geometry("650x501") #scrollbar lazy fix
     else: app.geometry("650x500")
@@ -111,39 +114,37 @@ def save():
     global entry1_text, entry1, entriesLabels
     _time = round(time.time())
 
-    print(pyfiglet.figlet_format(entry1.get(), font='big'))
     with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
         f.write(pyfiglet.figlet_format(entry1.get(), font='big'))
         f.close()
 
     for entries in addedEntries:
         try:
-            print(F"{entries[1].cget('text').capitalize()}: {entries[0].get()}")
             try:
                 with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
                     f.write(F"{entries[1].cget('text').capitalize()}: {entries[0].get()}\n")
                     f.close()
-            except Exception as e:
-                print(e)
+            except:
+                pass
 
             if f"{entries[1].cget('text')} (IP)" in entriesLabels: #https://ipapi.co/lol/json/
                 try: 
                     ipaddress.ip_address(entries[0].get())
                     response = DbIpCity.get(entries[0].get(), api_key='free')
-                    print(response.to_csv('---').split("---"))
-                    r = response.to_csv('---').split("---")   
-
+                    r = json.loads(response.to_json())
+                    country = pycountry.countries.get(alpha_2=str(r['country']).upper())
                     with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-                        f.write("\n")
-                        for stuff in r:
-                            f.write(f"{stuff}\n")
+                        f.write(f"\nCity: {r['city']}\n") # '
+                        f.write(f"Region: {r['region']}\n")
+                        f.write(f"Country: {r['country']} ({country.official_name})\n")
+                        f.write(f"Latitude: {r['latitude']}\n")
+                        f.write(f"Longitude: {r['longitude']}\n\n")
                         f.close()
                 except:
                     pass
         except:
-            print(pyfiglet.figlet_format(str(entries[1].cget("text")).removeprefix("Chapter: "), font='big'))
             with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-                f.write(pyfiglet.figlet_format(str(entries[1].cget("text")).removeprefix("Chapter: "), font='big'))
+                f.write(f"{pyfiglet.figlet_format(str(entries[1].cget('text')).removeprefix('Chapter: '), font='big')}\n")
 
 app = ttkthemes.ThemedTk(theme="arc")
 app.geometry("650x500")
@@ -155,7 +156,6 @@ filemenu.add_command(label="Add", command=lambda: popup("Add", "add"))
 filemenu.add_command(label="Add Chapter", command=lambda: popup("Add Chapter", "addc"))
 filemenu.add_command(label="Remove", command=lambda: popup("Remove", "remove"))
 filemenu.add_command(label="Save", command=lambda: save())
-filemenu.add_command(label="Save and copy", command=lambda: save())
 filemenu.add_separator()
 filemenu.add_command(label="Exit (ALT + F4)", command=lambda: exit())
 menubar.add_cascade(label="Main", menu=filemenu)
