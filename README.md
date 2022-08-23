@@ -8,4 +8,4 @@ even though they are not pog nor good looking
 bugs
   - cant delete an entry which contains an ip in label
 
-udelat open file a remane label
+udelat open file a rename label a hard code dox reason
