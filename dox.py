@@ -137,8 +137,10 @@ def save():
             pass
     
     with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-        f.write(F"Created with superior DOX TOOL by Crystallek#3348 (https://github.com/Crystallek/dox-app)")
+        f.write(F"\n\n\nCreated with superior DOX TOOL by Crystallek#3348 (https://github.com/Crystallek/python-dox-tool)")
         f.close()
+
+    os.system(f"start notepad.exe {os.path.dirname(__file__)}\\dox{_time}.txt")
 
 app = ttkthemes.ThemedTk(theme="arc")
 app.geometry("650x500")
@@ -155,7 +157,7 @@ filemenu.add_command(label="Exit (ALT + F4)", command=lambda: exit())
 menubar.add_cascade(label="Main", menu=filemenu)
 
 helpmenu = Menu(menubar, tearoff=0)
-helpmenu.add_command(label="GitHub", command=lambda: webbrowser.open_new("https://github.com/Crystallek/python-dox-tool"))
+helpmenu.add_command(label="GitHub", command=lambda: webbrowser.open_new("https://github.com/Crystallek/dox-app"))
 menubar.add_cascade(label="Help", menu=helpmenu)
 
 app.config(menu=menubar)
