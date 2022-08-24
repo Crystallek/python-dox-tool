@@ -18,9 +18,9 @@ entriesLabels = []
 addedEntries = []
 writeToFile = []
 
-def findindex(index, array, sub):
+def findindex(array, sub):
     counter = 0
-    while counter <= index:
+    while counter <= len(array) - 1:
         if sub == array[counter]: 
             return counter
         else: 
@@ -43,14 +43,26 @@ def popup(text, do):
     if do == "remove":
         top.title("Remove")
         btn = ttk.Button(top, text="Remove", command=lambda: remove(name.get()))
+    if do == "rename":
+        top.title("Rename")
+        name2 = ttk.Entry(top)
+        btn = ttk.Button(top, text="Rename", command=lambda: rename(name.get(), name2.get()))
 
     label.pack(padx=10, pady=2)
     name.pack(padx=10, pady=2)
+
+    try:
+        name2.pack(padx=10, pady=2)
+    except: 
+        pass
+
     btn.pack(padx=10, pady=2)
 
     if do == "add":
         btn2 = ttk.Checkbutton(top, text="Geolocate (IPs only)", variable=checkButtonState, takefocus=0)
         btn2.pack()
+        top.geometry("200x120")
+    elif do == "rename":
         top.geometry("200x120")
     else:
         top.geometry("200x90")
@@ -89,7 +101,7 @@ def remove(text):
     
     top.destroy()
 
-    index = findindex(len(entriesLabels) - 1, entriesLabels, text)
+    index = findindex(entriesLabels, text)
 
     for shit in addedEntries[index]:
         try:
@@ -142,22 +154,32 @@ def save():
 
     os.system(f"start notepad.exe {os.path.dirname(__file__)}\\dox{_time}.txt")
 
+def rename(a, b):
+    global entriesLabels
+    global addedEntries
+
+    index = findindex(entriesLabels, a)
+    entriesLabels[index] = b
+    addedEntries[index][1]["text"] = b
+
 app = ttkthemes.ThemedTk(theme="arc")
 app.geometry("650x500")
 app.resizable(False, False)
+app.title("DOX TOOL")
 
 menubar = Menu(app)
 filemenu = Menu(menubar, tearoff=0)
 filemenu.add_command(label="Add", command=lambda: popup("Add", "add"))
 filemenu.add_command(label="Add Chapter", command=lambda: popup("Add Chapter", "addc"))
 filemenu.add_command(label="Remove", command=lambda: popup("Remove", "remove"))
+filemenu.add_command(label="Rename", command=lambda: popup("Rename", "rename"))
 filemenu.add_command(label="Save", command=lambda: save())
 filemenu.add_separator()
 filemenu.add_command(label="Exit (ALT + F4)", command=lambda: exit())
 menubar.add_cascade(label="Main", menu=filemenu)
 
 helpmenu = Menu(menubar, tearoff=0)
-helpmenu.add_command(label="GitHub", command=lambda: webbrowser.open_new("https://github.com/Crystallek/dox-app"))
+helpmenu.add_command(label="GitHub", command=lambda: webbrowser.open_new("https://github.com/Crystallek/python-dox-tool"))
 menubar.add_cascade(label="Help", menu=helpmenu)
 
 app.config(menu=menubar)
