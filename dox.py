@@ -112,11 +112,17 @@ def remove(text):
     entriesLabels.pop(index)
 
 def save():
-    global entry1_text, entry1, entriesLabels
+    global entry1_text
+    global entry1
+    global entry2_text
+    global entry2 
+    global entriesLabels
+
     _time = round(time.time())
 
     with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
         f.write(pyfiglet.figlet_format(entry1.get(), font='big'))
+        f.write(f"Reason for dox: {entry2.get()}")
         f.close()
 
     for entries in addedEntries:
@@ -203,5 +209,10 @@ entry1_text = ttk.Label(second_frame, text="DOX NAME")
 entry1 = ttk.Entry(second_frame, width=100)
 entry1_text.pack(padx=10, pady=10)
 entry1.pack(padx=10, pady=0)
+
+entry2_text = ttk.Label(second_frame, text="DOX REASON")
+entry2 = ttk.Entry(second_frame, width=100)
+entry2_text.pack(padx=10, pady=10)
+entry2.pack(padx=10, pady=0)
 
 app.mainloop()
