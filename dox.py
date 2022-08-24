@@ -122,7 +122,7 @@ def save():
 
     with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
         f.write(pyfiglet.figlet_format(entry1.get(), font='big'))
-        f.write(f"Reason for dox: {entry2.get()}")
+        f.write(f"Reason for dox: {entry2.get()}\n\n")
         f.close()
 
     for entries in addedEntries:
@@ -147,7 +147,7 @@ def save():
                         f.write(f"Country: {r['country']} ({country.official_name})\n")
                         f.write(f"Latitude: {r['latitude']}\n")
                         f.write(f"Longitude: {r['longitude']}\n\n")
-                        f.write(f"Map view: https://www.google.com/maps/@{r['latitude']},{r['longitude']},17z\n")
+                        f.write(f"Map view: https://www.google.com/maps/@{r['latitude']},{r['longitude']},17z\n\n")
                         f.close()
                 except:
                     pass
@@ -161,9 +161,11 @@ def save():
     os.system(f"start notepad.exe {os.path.dirname(__file__)}\\dox{_time}.txt")
 
 def rename(a, b):
+    global top
     global entriesLabels
     global addedEntries
 
+    top.destroy()
     index = findindex(entriesLabels, a)
     entriesLabels[index] = b
     addedEntries[index][1]["text"] = b
