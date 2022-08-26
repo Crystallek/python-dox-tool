@@ -159,12 +159,7 @@ def save():
                     r = json.loads(response.to_json())
                     country = pycountry.countries.get(alpha_2=str(r['country']).upper())
                     with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-                        f.write(f"""\nCity: {r['city']}\n
-                        Region: {r['region']}\n
-                        Country: {r['country']} ({country.official_name})\n
-                        Latitude: {r['latitude']}\n
-                        Longitude: {r['longitude']}\n\n
-                        Map view: https://www.google.com/maps/@{r['latitude']},{r['longitude']},17z\n\n""")
+                        f.write(f"""\nCity: {r['city']}\nRegion: {r['region']}\nCountry: {r['country']} ({country.official_name})\nLatitude: {r['latitude']}\nLongitude: {r['longitude']}\n\nMap view: https://www.google.com/maps/@{r['latitude']},{r['longitude']},17z\n\n""")
                         f.close()
                 except:
                     pass
