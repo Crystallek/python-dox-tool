@@ -17,6 +17,8 @@ scrollbarfix = True
 entriesLabels = []
 addedEntries = []
 writeToFile = []
+font = "big"
+
 
 def findindex(array, sub):
     counter = 0
@@ -137,8 +139,7 @@ def save():
     _time = round(time.time())
 
     with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-        f.write(pyfiglet.figlet_format(entry1.get(), font='big')) #PŘEDĚLAT, KOKOTSKÝ
-        f.write(f"Reason for dox: {entry2.get()}\n\n")
+        f.write(f"{pyfiglet.figlet_format(entry1.get(), font=font)}\nReason for dox: {entry2.get()}\n\n")
         f.close()
 
     for entries in addedEntries:
@@ -149,7 +150,7 @@ def save():
                     f.close()
             except:
                 with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-                    f.write(f"\n{pyfiglet.figlet_format(str(entries[1].cget('text')).removeprefix('Chapter: '), font='big')}")
+                    f.write(f"\n{pyfiglet.figlet_format(str(entries[1].cget('text')).removeprefix('Chapter: '), font=font)}")
 
             if f"{entries[1].cget('text')} (IP)" in entriesLabels:
                 try: 
@@ -158,12 +159,12 @@ def save():
                     r = json.loads(response.to_json())
                     country = pycountry.countries.get(alpha_2=str(r['country']).upper())
                     with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-                        f.write(f"\nCity: {r['city']}\n")
-                        f.write(f"Region: {r['region']}\n")
-                        f.write(f"Country: {r['country']} ({country.official_name})\n")
-                        f.write(f"Latitude: {r['latitude']}\n")
-                        f.write(f"Longitude: {r['longitude']}\n\n")
-                        f.write(f"Map view: https://www.google.com/maps/@{r['latitude']},{r['longitude']},17z\n\n")
+                        f.write(f"""\nCity: {r['city']}\n
+                        Region: {r['region']}\n
+                        Country: {r['country']} ({country.official_name})\n
+                        Latitude: {r['latitude']}\n
+                        Longitude: {r['longitude']}\n\n
+                        Map view: https://www.google.com/maps/@{r['latitude']},{r['longitude']},17z\n\n""")
                         f.close()
                 except:
                     pass
