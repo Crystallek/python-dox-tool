@@ -21,13 +21,27 @@ writeToFile = []
 def findindex(array, sub):
     counter = 0
     while counter <= len(array) - 1:
-        if sub == array[counter]: 
+        if str(sub) == array[counter]: 
             return counter
         else: 
             counter += 1
 
+def change(a, b, top):
+    global entriesLabels
+    global addedEntries
+
+    top.destroy()
+
+    index1 = findindex(entriesLabels, a)
+    index2 = findindex(entriesLabels, b)
+
+    entriesLabels[index1] = b
+    entriesLabels[index2] = a
+
+    addedEntries[index1][1]["text"] = b
+    addedEntries[index2][1]["text"] = a
+
 def popup(text, do):
-    global top
     top = Toplevel(app)
     top.resizable(False, False)
 
@@ -37,16 +51,20 @@ def popup(text, do):
     
     if do == "add":
         top.title("Add")
-        btn = ttk.Button(top, text="Add", command=lambda: add(name.get(), checkButtonState.get()))
+        btn = ttk.Button(top, text="Add", command=lambda: add(name.get(), checkButtonState.get(), top))
     if do == "addc":
-        btn = ttk.Button(top, text="Add", command=lambda: add("Chapter: " + name.get(), None))
+        btn = ttk.Button(top, text="Add", command=lambda: add("Chapter: " + name.get(), None, top))
     if do == "remove":
         top.title("Remove")
-        btn = ttk.Button(top, text="Remove", command=lambda: remove(name.get()))
+        btn = ttk.Button(top, text="Remove", command=lambda: remove(name.get(), top))
     if do == "rename":
         top.title("Rename")
         name2 = ttk.Entry(top)
-        btn = ttk.Button(top, text="Rename", command=lambda: rename(name.get(), name2.get()))
+        btn = ttk.Button(top, text="Rename", command=lambda: rename(name.get(), name2.get(), top))
+    if do == "changepos":
+        top.title("Change position")
+        name2 = ttk.Entry(top)
+        btn = ttk.Button(top, text="Change", command=lambda: change(name.get(), name2.get(), top))
 
     label.pack(padx=10, pady=2)
     name.pack(padx=10, pady=2)
@@ -62,13 +80,12 @@ def popup(text, do):
         btn2 = ttk.Checkbutton(top, text="Geolocate (IPs only)", variable=checkButtonState, takefocus=0)
         btn2.pack()
         top.geometry("200x120")
-    elif do == "rename":
+    elif do == "rename" or do == "changepos":
         top.geometry("200x120")
     else:
         top.geometry("200x90")
 
-def add(text, locator):
-    global top
+def add(text, locator, top):
     global scrollbarfix
 
     top.destroy()
@@ -95,8 +112,7 @@ def add(text, locator):
     else: app.geometry("650x500")
     scrollbarfix = not scrollbarfix
 
-def remove(text):
-    global top
+def remove(text, top):
     global addedEntries
     
     top.destroy()
@@ -121,7 +137,7 @@ def save():
     _time = round(time.time())
 
     with open(f"dox{_time}.txt", "a", encoding="utf-8") as f:
-        f.write(pyfiglet.figlet_format(entry1.get(), font='big'))
+        f.write(pyfiglet.figlet_format(entry1.get(), font='big')) #PŘEDĚLAT, KOKOTSKÝ
         f.write(f"Reason for dox: {entry2.get()}\n\n")
         f.close()
 
@@ -160,8 +176,7 @@ def save():
 
     os.system(f"start notepad.exe {os.path.dirname(__file__)}\\dox{_time}.txt")
 
-def rename(a, b):
-    global top
+def rename(a, b, top):
     global entriesLabels
     global addedEntries
 
@@ -181,6 +196,7 @@ filemenu.add_command(label="Add", command=lambda: popup("Add", "add"))
 filemenu.add_command(label="Add Chapter", command=lambda: popup("Add Chapter", "addc"))
 filemenu.add_command(label="Remove", command=lambda: popup("Remove", "remove"))
 filemenu.add_command(label="Rename", command=lambda: popup("Rename", "rename"))
+filemenu.add_command(label="Change position", command=lambda: popup("Change position", "changepos"))
 filemenu.add_command(label="Save", command=lambda: save())
 filemenu.add_separator()
 filemenu.add_command(label="Exit (ALT + F4)", command=lambda: exit())
